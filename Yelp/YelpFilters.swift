@@ -12,7 +12,7 @@ class YelpFilters {
     let filterSections = [
         Filter(
             sectionKey: "deals",
-            sectionDisplayHeader: "Offering a Deal",
+            sectionDisplayHeader: nil,
             filterOptions: [["name" : "Offering a Deal", "code" : ""]],
             filterType: .Toggle),
         

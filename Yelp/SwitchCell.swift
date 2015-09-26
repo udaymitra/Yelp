@@ -9,24 +9,29 @@
 import UIKit
 
 @objc protocol SwitchCellDelegate {
-    optional func switchCell(switchCell: SwitchCell, didChangeValue value: Bool)
+    optional func switchCellIsTapped(switchCell: SwitchCell)
 }
 
 class SwitchCell: UITableViewCell {
 
     @IBOutlet weak var switchLabel: UILabel!
-    @IBOutlet weak var onSwitch: UISwitch!
+    @IBOutlet weak var switchImageView: UIImageView!
+    
     
     weak var delegate : SwitchCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        onSwitch.addTarget(self, action: "switchValueChanged", forControlEvents: UIControlEvents.ValueChanged)
+
+        switchImageView.image = UIImage(named: "Uncheck")
+        switchImageView.userInteractionEnabled = true
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("switchValueChanged:"))
+        switchImageView.addGestureRecognizer(tapGestureRecognizer)
     }
     
-    func switchValueChanged() {
-        delegate?.switchCell?(self, didChangeValue: onSwitch.on)
-        print("Switch value changed")
+    func switchValueChanged(gestureRecognizer: UITapGestureRecognizer) {
+        delegate?.switchCellIsTapped!(self)
+        print("Switch value was tapped")
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
