@@ -3,7 +3,7 @@
 //  Yelp
 //
 //  Created by Soumya on 9/26/15.
-//  Copyright © 2015 Timothy Lee. All rights reserved.
+//  Copyright © 2015 Soumya. All rights reserved.
 //
 
 import Foundation
@@ -12,12 +12,14 @@ class Filter {
     var sectionKey : String
     var sectionDisplayHeader : String
     var filterOptions : [[String:String]]
+    var filterType : FilterType
     var switchStates = [Int:Bool]()
     
-    init(sectionKey : String, sectionDisplayHeader : String, filterOptions : [[String:String]]) {
+    init(sectionKey : String, sectionDisplayHeader : String, filterOptions : [[String:String]], filterType: FilterType) {
         self.sectionKey = sectionKey
         self.sectionDisplayHeader = sectionDisplayHeader
         self.filterOptions = filterOptions
+        self.filterType = filterType
     }
     
     func getSelectedFilterOptions() -> [String] {
@@ -29,4 +31,8 @@ class Filter {
         }
         return selectedCategories
     }
+}
+
+enum FilterType {
+    case Toggle, SingleSelect, MultiSelect
 }

@@ -3,7 +3,7 @@
 //  Yelp
 //
 //  Created by Soumya on 9/23/15.
-//  Copyright © 2015 Timothy Lee. All rights reserved.
+//  Copyright © 2015 Soumya. All rights reserved.
 //
 
 import UIKit

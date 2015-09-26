@@ -60,15 +60,22 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
-        var categories = filters["categories"] as? [String]
-        var sortmode = filters["sortmode"] as? [String]
-        var distance = filters["distance"] as? [String]
+        let categories = filters["categories"] as? [String]
         
-        print(categories)
-        print(sortmode)
+        var yelpSortMode : YelpSortMode?
+        if let sortmode = filters["sortmode"] as? [String] {
+            if (!sortmode.isEmpty) {
+                yelpSortMode = YelpSortMode(rawValue: Int(sortmode[0])!)
+            }
+        }
+
+        let deals = filters["deals"] as? [String]
+        let showDeals = deals != nil && !deals!.isEmpty
+        
+        let distance = filters["distance"] as? [String]
         print(distance)
         
-        Business.searchWithTerm("Restaurants", sort: nil, categories: categories, deals: nil) { (businesses:[Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm("Restaurants", sort: yelpSortMode, categories: categories, deals: showDeals) { (businesses:[Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.businessesTableView.reloadData()
         }

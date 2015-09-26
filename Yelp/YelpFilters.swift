@@ -3,13 +3,19 @@
 //  Yelp
 //
 //  Created by Soumya on 9/26/15.
-//  Copyright © 2015 Timothy Lee. All rights reserved.
+//  Copyright © 2015 Soumya. All rights reserved.
 //
 
 import Foundation
 
 class YelpFilters {
     let filterSections = [
+        Filter(
+            sectionKey: "deals",
+            sectionDisplayHeader: "Offering a Deal",
+            filterOptions: [["name" : "Offering a Deal", "code" : ""]],
+            filterType: .Toggle),
+        
         Filter(
             sectionKey: "distance",
             sectionDisplayHeader: "Distance",
@@ -19,7 +25,8 @@ class YelpFilters {
                 ["name" : "1 mile", "code" : "1600"],
                 ["name" : "5 miles", "code" : "8000"],
                 ["name" : "20 miles", "code" : "32000"]
-            ]),
+            ],
+            filterType: .SingleSelect),
         
         Filter(
             sectionKey: "sortmode",
@@ -27,9 +34,9 @@ class YelpFilters {
             filterOptions: [
                 ["name" : "Best Match", "code" : "0"],
                 ["name" : "Distance", "code" : "1"],
-                ["name" : "Rating", "code" : "2"],
-                ["name" : "Most Reviewed", "code" : "3"]
-            ]),
+                ["name" : "Rating", "code" : "2"]
+            ],
+            filterType: .SingleSelect),
         
         Filter(
             sectionKey: "categories",
@@ -204,6 +211,7 @@ class YelpFilters {
                 ["name" : "Wok", "code": "wok"],
                 ["name" : "Wraps", "code": "wraps"],
                 ["name" : "Yugoslav", "code": "yugoslav"]
-            ])
+            ],
+            filterType: .MultiSelect)
     ]
 }
