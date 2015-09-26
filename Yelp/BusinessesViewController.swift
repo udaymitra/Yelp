@@ -61,6 +61,13 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
         var categories = filters["categories"] as? [String]
+        var sortmode = filters["sortmode"] as? [String]
+        var distance = filters["distance"] as? [String]
+        
+        print(categories)
+        print(sortmode)
+        print(distance)
+        
         Business.searchWithTerm("Restaurants", sort: nil, categories: categories, deals: nil) { (businesses:[Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.businessesTableView.reloadData()

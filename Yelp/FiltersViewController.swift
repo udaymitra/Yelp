@@ -14,14 +14,15 @@ import UIKit
 
 class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate {
     @IBOutlet weak var tableView: UITableView!
-    var categories: [[String:String]]!
-    var switchStates = [Int:Bool]()
+    var filterSections : [Filter]!
     
     weak var delegate: FiltersViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        categories = yelpCategories()
+        
+        filterSections = YelpFilters().filterSections
+        
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -40,40 +41,43 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     @IBAction func onSearchButton(sender: AnyObject) {
         dismissViewControllerAnimated(true, completion: nil)
-        var filters = [String : AnyObject]()
-        
-        var selectedCategories = [String]()
-        for (row, isSwitchOn) in switchStates {
-            if (isSwitchOn) {
-                selectedCategories.append(categories[row]["code"]!)
-            }
-        }
-        if (selectedCategories.count > 0) {
-            filters["categories"] = selectedCategories
+        var selectedFilters = [String : AnyObject]()
+        for filterSection in filterSections {
+                selectedFilters[filterSection.sectionKey] = filterSection.getSelectedFilterOptions()
         }
         
-        delegate?.filtersViewController?(self, didUpdateFilters: filters)
+        delegate?.filtersViewController?(self, didUpdateFilters: selectedFilters)
 
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-        cell.switchLabel.text = categories[indexPath.row]["name"]
+        let filter = filterSections[indexPath.section]
+        cell.switchLabel.text = filter.filterOptions[indexPath.row]["name"]
         cell.delegate = self
-        cell.onSwitch.on = switchStates[indexPath.row] ?? false
+        cell.onSwitch.on = filter.switchStates[indexPath.row] ?? false
         return cell
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return (filterSections[section].filterOptions).count
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return filterSections.count
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return filterSections[section].sectionDisplayHeader
     }
     
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
-        switchStates[indexPath.row] = value
+        let filter = filterSections[indexPath.section]
+        filter.switchStates[indexPath.row] = value
     }
     
-    /*
+        /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -82,6 +86,25 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         // Pass the selected object to the new view controller.
     }
     */
+    
+    func distances() -> [[String:String]] {
+        return [
+            ["name" : "Best Match", "code" : ""],
+            ["name" : "Within 4 blocks", "code" : "1000"],
+            ["name" : "1 mile", "code" : "1600"],
+            ["name" : "5 miles", "code" : "8000"],
+            ["name" : "20 miles", "code" : "32000"]
+        ]
+    }
+    
+    func sortmodes() -> [[String:String]] {
+        return [
+            ["name" : "Best Match", "code" : "0"],
+            ["name" : "Disatnce", "code" : "1"],
+            ["name" : "Rating", "code" : "2"],
+            ["name" : "Most Reviewed", "code" : "3"]
+        ]
+    }
     
     func yelpCategories() -> [[String:String]] {
         return [

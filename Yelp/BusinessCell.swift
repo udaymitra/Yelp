@@ -25,7 +25,6 @@ class BusinessCell: UITableViewCell {
             reviewsLabel.text = "\(business.reviewCount!) Reviews"
             addressLabel.text = business.address
             cuisinesLabel.text = business.categories
-            print(business.imageURL)
             thumbnailImageView.setImageWithURL(business.imageURL)
             ratingImageView.setImageWithURL(business.ratingImageURL)
 //            thumbnailImageView.contentMode = UIViewContentMode.ScaleAspectFit
@@ -40,7 +39,6 @@ class BusinessCell: UITableViewCell {
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
 
