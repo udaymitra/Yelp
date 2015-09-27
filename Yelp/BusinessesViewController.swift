@@ -98,9 +98,21 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let navigationController = segue.destinationViewController as! UINavigationController
-        let filtersViewController = navigationController.topViewController as! FiltersViewController
-        filtersViewController.delegate = self
+        super.prepareForSegue(segue, sender: sender)
+        if segue.destinationViewController is UINavigationController {
+            let navigationController = segue.destinationViewController as! UINavigationController
+            let nextViewController = navigationController.viewControllers[0]
+            if (nextViewController is FiltersViewController) {
+                let filtersViewController = nextViewController as! FiltersViewController
+                filtersViewController.delegate = self
+            }
+            if (nextViewController is MapViewController) {
+                let mapViewController = nextViewController as! MapViewController
+                mapViewController.delegate = self
+                mapViewController.businesses = self.businesses
+                mapViewController.userLocation = defaultLocation
+            }
+        }
     }
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
@@ -130,5 +142,4 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
             self.businessesTableView.reloadData()
         }
     }
-
 }

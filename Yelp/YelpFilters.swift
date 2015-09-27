@@ -12,13 +12,23 @@ class YelpFilters {
     let filterSections = [
         Filter(
             sectionKey: "deals",
-            sectionDisplayHeader: nil,
+            sectionDisplayHeader: "DEALS",
             filterOptions: [["name" : "Offering a Deal", "code" : ""]],
             filterType: .Toggle),
         
         Filter(
+            sectionKey: "sortmode",
+            sectionDisplayHeader: "SORT BY",
+            filterOptions: [
+                ["name" : "Best Match", "code" : "0"],
+                ["name" : "Distance", "code" : "1"],
+                ["name" : "Rating", "code" : "2"]
+            ],
+            filterType: .SingleSelect),
+
+        Filter(
             sectionKey: "distance",
-            sectionDisplayHeader: "Distance",
+            sectionDisplayHeader: "DISTANCE",
             filterOptions: [
                 ["name" : "Best Match", "code" : ""],
                 ["name" : "Within 4 blocks", "code" : "1000"],
@@ -27,20 +37,10 @@ class YelpFilters {
                 ["name" : "20 miles", "code" : "32000"]
             ],
             filterType: .SingleSelect),
-        
-        Filter(
-            sectionKey: "sortmode",
-            sectionDisplayHeader: "Sort by",
-            filterOptions: [
-                ["name" : "Best Match", "code" : "0"],
-                ["name" : "Distance", "code" : "1"],
-                ["name" : "Rating", "code" : "2"]
-            ],
-            filterType: .SingleSelect),
-        
+                
         Filter(
             sectionKey: "categories",
-            sectionDisplayHeader: "Categories",
+            sectionDisplayHeader: "CATEGORIES",
             filterOptions: [
                 ["name" : "Afghan", "code": "afghani"],
                 ["name" : "African", "code": "african"],

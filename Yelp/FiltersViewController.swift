@@ -102,8 +102,16 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         return filterSections.count
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return filterSections[section].sectionDisplayHeader
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerLabel = UILabel(frame: CGRectZero)
+        headerLabel.backgroundColor = UIColor.clearColor()
+        headerLabel.opaque = false
+        headerLabel.textColor = UIColor.grayColor()
+        headerLabel.font = UIFont.boldSystemFontOfSize(17)
+        headerLabel.frame = CGRectMake(10, 0, 200, 100)
+        
+        headerLabel.text = filterSections[section].sectionDisplayHeader
+        return headerLabel
     }
     
     func switchCellIsTapped(switchCell: SwitchCell) {
