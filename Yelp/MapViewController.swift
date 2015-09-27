@@ -13,14 +13,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var delegate: BusinessesViewController!
     @IBOutlet weak var mapView: MKMapView!
     
-    var businesses: [Business]!
-    var userLocation: CLLocationCoordinate2D!
+    var yelpResponse: YelpResponse!
     var businessByAnnotation = [NSValue : Business]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
-        mapView.setRegion(MKCoordinateRegionMake(userLocation, MKCoordinateSpanMake(0.1, 0.1)), animated: false)
+        mapView.setRegion(MKCoordinateRegionMake(yelpResponse.mapRegionCenter, yelpResponse.coordinateSpan
+        ), animated: false)
         createAnnotations()
     }
     
@@ -29,7 +29,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.removeAnnotations(existingAnnotations)
         businessByAnnotation = [NSValue : Business]()
         
-        for business in businesses {
+        for business in yelpResponse.businesses {
             if let center = business.center {
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = CLLocationCoordinate2DMake(center.latitude, center.longitude)

@@ -11,7 +11,7 @@ import MapKit
 
 class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate {
 
-    var businesses: [Business]!
+    var yelpResponse: YelpResponse!
     var searchBar:UISearchBar!
     var customSearchCancelBarButton: UIBarButtonItem!
     var lastSearchString:String!
@@ -60,14 +60,12 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (businesses != nil)
-            ? businesses!.count
-            : 0
+        return (self.yelpResponse != nil) ? self.yelpResponse.businesses.count : 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let businessCell = businessesTableView.dequeueReusableCellWithIdentifier("BusinessCell", forIndexPath: indexPath) as! BusinessCell
-        businessCell.business = businesses[indexPath.row]
+        businessCell.business = self.yelpResponse.businesses[indexPath.row]
         return businessCell        
     }
     
@@ -91,8 +89,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
             }
         }
 
-        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: defaultLocation, radius: distance) { (businesses:[Business]!, error: NSError!) -> Void in
-            self.businesses = businesses
+        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: defaultLocation, radius: distance) { (yelpResponse:YelpResponse?, error: NSError!) -> Void in
+            self.yelpResponse = yelpResponse!
             self.businessesTableView.reloadData()
         }
     }
@@ -109,8 +107,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
             if (nextViewController is MapViewController) {
                 let mapViewController = nextViewController as! MapViewController
                 mapViewController.delegate = self
-                mapViewController.businesses = self.businesses
-                mapViewController.userLocation = defaultLocation
+                mapViewController.yelpResponse = self.yelpResponse
             }
         }
     }
@@ -136,8 +133,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func getBusinessResultsForSearchStringWithoutFilters(searchString: String) {
-        Business.searchWithTerm(searchString, sort: nil, categories: nil, deals: false, location: defaultLocation, radius: nil) { (businesses: [Business]!, error: NSError!) -> Void in
-            self.businesses = businesses
+        Business.searchWithTerm(searchString, sort: nil, categories: nil, deals: false, location: defaultLocation, radius: nil) { (yelpResponse: YelpResponse?, error: NSError!) -> Void in
+            self.yelpResponse = yelpResponse!
             // reload table view
             self.businessesTableView.reloadData()
         }

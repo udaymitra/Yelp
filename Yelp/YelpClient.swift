@@ -49,11 +49,11 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         self.requestSerializer.saveAccessToken(token)
     }
     
-    func searchWithTerm(term: String, completion: ([Business]!, NSError!) -> Void) -> AFHTTPRequestOperation {
+    func searchWithTerm(term: String, completion: (YelpResponse?, NSError!) -> Void) -> AFHTTPRequestOperation {
         return searchWithTerm(term, sort: nil, categories: nil, deals: nil, completion: completion)
     }
     
-    func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, location: CLLocationCoordinate2D, radius: Double?, completion: ([Business]!, NSError!) -> Void) -> AFHTTPRequestOperation {
+    func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, location: CLLocationCoordinate2D, radius: Double?, completion: (YelpResponse?, NSError!) -> Void) -> AFHTTPRequestOperation {
         // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
 
         var parameters: [String : AnyObject] = ["term": term, "ll": "\(location.latitude),\(location.longitude)"]
@@ -78,14 +78,27 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         return self.GET("search", parameters: parameters, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             let dictionaries = response["businesses"] as? [NSDictionary]
             if dictionaries != nil {
-                completion(Business.businesses(array: dictionaries!), nil)
+                let businesses = Business.businesses(array: dictionaries!)
+                
+                let region = response["region"] as! NSDictionary
+                let center = region["center"] as! NSDictionary
+                let centerLat = center["latitude"] as! Double
+                let centerLng = center["longitude"] as! Double
+                let span = region["span"] as! NSDictionary
+                let latSpanDelta = span["latitude_delta"] as! Double
+                let lngSpanDelta = span["longitude_delta"] as! Double
+                
+                let yelpResponse = YelpResponse(businesses: businesses, centerLat: centerLat, centerLng: centerLng, spanLatitudeDelta: latSpanDelta, spanLongitudeDelta: lngSpanDelta)
+
+                completion(yelpResponse, nil)
             }
+            
             }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
                 completion(nil, error)
         })
     }
     
-    func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: ([Business]!, NSError!) -> Void) -> AFHTTPRequestOperation {
+    func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: (YelpResponse?, NSError!) -> Void) -> AFHTTPRequestOperation {
         // Default the location to San Francisco
         let location = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
         
