@@ -9,19 +9,29 @@
 import UIKit
 import MapKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate, CLLocationManagerDelegate {
 
     var yelpResponse: YelpResponse!
     var searchBar:UISearchBar!
     var customSearchCancelBarButton: UIBarButtonItem!
     var lastSearchString:String!
+    @IBOutlet var showMapBarButton: UIBarButtonItem!
+    var locationManager : CLLocationManager!
     
-    let defaultLocation = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
+    // set default location
+    var lastLocation = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
     
     @IBOutlet weak var businessesTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // initialise core location manager
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.distanceFilter = 200
+        locationManager.requestWhenInUseAuthorization()
         
         // add search bar to navigation bar
         searchBar = UISearchBar()
@@ -89,7 +99,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
             }
         }
 
-        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: defaultLocation, radius: distance) { (yelpResponse:YelpResponse?, error: NSError!) -> Void in
+        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: lastLocation, radius: distance) { (yelpResponse:YelpResponse?, error: NSError!) -> Void in
             self.yelpResponse = yelpResponse!
             self.businessesTableView.reloadData()
         }
@@ -108,6 +118,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
                 let mapViewController = nextViewController as! MapViewController
                 mapViewController.delegate = self
                 mapViewController.yelpResponse = self.yelpResponse
+                mapViewController.locationManager = self.locationManager
             }
         }
     }
@@ -123,9 +134,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     func customSearchBarCancelButtonClicked() {
         searchBar.resignFirstResponder()
-        navigationItem.rightBarButtonItem = nil
         searchBar.text = ""
         searchBar.placeholder = lastSearchString
+
+        navigationItem.rightBarButtonItem = showMapBarButton
     }
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
@@ -133,10 +145,21 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func getBusinessResultsForSearchStringWithoutFilters(searchString: String) {
-        Business.searchWithTerm(searchString, sort: nil, categories: nil, deals: false, location: defaultLocation, radius: nil) { (yelpResponse: YelpResponse?, error: NSError!) -> Void in
+        Business.searchWithTerm(searchString, sort: nil, categories: nil, deals: false, location: lastLocation, radius: nil) { (yelpResponse: YelpResponse?, error: NSError!) -> Void in
             self.yelpResponse = yelpResponse!
             // reload table view
             self.businessesTableView.reloadData()
         }
+    }
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == CLAuthorizationStatus.AuthorizedWhenInUse {
+            manager.startUpdatingLocation()
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.first
+        lastLocation = location!.coordinate
     }
 }

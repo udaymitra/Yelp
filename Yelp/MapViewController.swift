@@ -8,16 +8,19 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
 class MapViewController: UIViewController, MKMapViewDelegate {
     var delegate: BusinessesViewController!
     @IBOutlet weak var mapView: MKMapView!
+    weak var locationManager : CLLocationManager!
     
     var yelpResponse: YelpResponse!
     var businessByAnnotation = [NSValue : Business]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         mapView.delegate = self
         mapView.setRegion(MKCoordinateRegionMake(yelpResponse.mapRegionCenter, yelpResponse.coordinateSpan
         ), animated: false)
