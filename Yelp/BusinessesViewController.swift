@@ -9,43 +9,45 @@
 import UIKit
 import MapKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate {
 
     var businesses: [Business]!
+    var searchBar:UISearchBar!
+    var customSearchCancelBarButton: UIBarButtonItem!
+    var lastSearchString:String!
     
     @IBOutlet weak var businessesTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // add search bar to navigation bar
+        searchBar = UISearchBar()
+        searchBar.sizeToFit()
+        lastSearchString = "Restaurant"
+        searchBar.placeholder = lastSearchString
+        navigationItem.titleView = searchBar
+        
+        // create custom search cancel button
+        customSearchCancelBarButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: "customSearchBarCancelButtonClicked")
+        customSearchCancelBarButton.tintColor = UIColor.whiteColor()
+        
+        searchBar.delegate = self
         businessesTableView.delegate = self
         businessesTableView.dataSource = self
         
         businessesTableView.rowHeight = UITableViewAutomaticDimension
         businessesTableView.estimatedRowHeight = 100
         
-//        Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
-//            self.businesses = businesses
-//            
-//            for business in businesses {
-//                println(business.name!)
-//                println(business.address!)
-//            }
-//        })
-        
-        Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: false) { (businesses: [Business]!, error: NSError!) -> Void in
-            self.businesses = businesses
-            // reload table view
-            self.businessesTableView.reloadData()
-            
-            for business in businesses {
-                print(business.name!)
-                print(business.address!)
-            }
-        }
+        updateBusinessResultsForSearchString(lastSearchString)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -82,7 +84,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
 
         let location = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
         
-        Business.searchWithTerm("Restaurants", sort: yelpSortMode, categories: categories, deals: showDeals, location: location, radius: distance) { (businesses:[Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: location, radius: distance) { (businesses:[Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.businessesTableView.reloadData()
         }
@@ -93,5 +95,35 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         let filtersViewController = navigationController.topViewController as! FiltersViewController
         filtersViewController.delegate = self
     }
+    
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        navigationItem.rightBarButtonItem = customSearchCancelBarButton
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        lastSearchString = searchText
+        updateBusinessResultsForSearchString(searchText)
+    }
+    
+    func customSearchBarCancelButtonClicked() {
+        searchBar.resignFirstResponder()
+        navigationItem.rightBarButtonItem = nil
+        searchBar.text = ""
+        searchBar.placeholder = lastSearchString
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        customSearchBarCancelButtonClicked()
+    }
+    
+    func updateBusinessResultsForSearchString(searchString: String) {
+        Business.searchWithTerm(searchString, sort: .Distance, categories: nil, deals: false) { (businesses: [Business]!, error: NSError!) -> Void in
+            self.businesses = businesses
+            // reload table view
+            self.businessesTableView.reloadData()
+        }
+    }
+    
+    
 
 }

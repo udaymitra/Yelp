@@ -18,6 +18,8 @@ class BusinessCell: UITableViewCell {
     @IBOutlet weak var cuisinesLabel: UILabel!
     @IBOutlet weak var ratingImageView: UIImageView!
     @IBOutlet weak var dealsImageView: UIImageView!
+    @IBOutlet weak var dealLabel: UILabel!
+    @IBOutlet weak var dealLabelToBottomMarginConstraint: NSLayoutConstraint!
     
     var business : Business! {
         didSet {
@@ -30,10 +32,16 @@ class BusinessCell: UITableViewCell {
             ratingImageView.setImageWithURL(business.ratingImageURL)
 //            thumbnailImageView.contentMode = UIViewContentMode.ScaleAspectFit
             
-            if(business.dealString != nil) {
+//            self.removeConstraint(dealLabelToBottomMarginConstraint)
+            if(business.dealString != nil && !business.dealString!.isEmpty) {
                 dealsImageView.hidden = false
+                dealLabel.hidden = false
+                dealLabel.text = business.dealString!
+//                self.addConstraint(dealLabelToBottomMarginConstraint)
             } else {
                 dealsImageView.hidden = true
+                dealLabel.hidden = true
+                dealLabelToBottomMarginConstraint.constant = 0
             }
         }
     }
