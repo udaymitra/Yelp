@@ -16,6 +16,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     var customSearchCancelBarButton: UIBarButtonItem!
     var lastSearchString:String!
     
+    let defaultLocation = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
+    
     @IBOutlet weak var businessesTableView: UITableView!
     
     override func viewDidLoad() {
@@ -39,7 +41,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         businessesTableView.rowHeight = UITableViewAutomaticDimension
         businessesTableView.estimatedRowHeight = 100
         
-        updateBusinessResultsForSearchString(lastSearchString)
+        getBusinessResultsForSearchStringWithoutFilters(lastSearchString)
     }
 
     override func didReceiveMemoryWarning() {
@@ -82,9 +84,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
             }
         }
 
-        let location = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
-        
-        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: location, radius: distance) { (businesses:[Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: defaultLocation, radius: distance) { (businesses:[Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.businessesTableView.reloadData()
         }
@@ -102,7 +102,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         lastSearchString = searchText
-        updateBusinessResultsForSearchString(searchText)
+        getBusinessResultsForSearchStringWithoutFilters(searchText)
     }
     
     func customSearchBarCancelButtonClicked() {
@@ -116,14 +116,12 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         customSearchBarCancelButtonClicked()
     }
     
-    func updateBusinessResultsForSearchString(searchString: String) {
-        Business.searchWithTerm(searchString, sort: .Distance, categories: nil, deals: false) { (businesses: [Business]!, error: NSError!) -> Void in
+    func getBusinessResultsForSearchStringWithoutFilters(searchString: String) {
+        Business.searchWithTerm(searchString, sort: .Distance, categories: nil, deals: false, location: defaultLocation, radius: nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             // reload table view
             self.businessesTableView.reloadData()
         }
     }
-    
-    
 
 }
