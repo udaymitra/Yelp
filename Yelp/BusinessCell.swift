@@ -17,6 +17,7 @@ class BusinessCell: UITableViewCell {
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var cuisinesLabel: UILabel!
     @IBOutlet weak var ratingImageView: UIImageView!
+    @IBOutlet weak var dealsImageView: UIImageView!
     
     var business : Business! {
         didSet {
@@ -28,6 +29,12 @@ class BusinessCell: UITableViewCell {
             thumbnailImageView.setImageWithURL(business.imageURL)
             ratingImageView.setImageWithURL(business.ratingImageURL)
 //            thumbnailImageView.contentMode = UIViewContentMode.ScaleAspectFit
+            
+            if(business.dealString != nil) {
+                dealsImageView.hidden = false
+            } else {
+                dealsImageView.hidden = true
+            }
         }
     }
     

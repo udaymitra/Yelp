@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
 
@@ -31,7 +32,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
 //            }
 //        })
         
-        Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: false) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             // reload table view
             self.businessesTableView.reloadData()
@@ -72,10 +73,16 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         let deals = filters["deals"] as? [String]
         let showDeals = deals != nil && !deals!.isEmpty
         
-        let distance = filters["distance"] as? [String]
-        print(distance)
+        var distance : Double?
+        if let distanceStrings = filters["distance"] as? [String] {
+            if (!distanceStrings.isEmpty) {
+                distance = Double(distanceStrings[0])
+            }
+        }
+
+        let location = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
         
-        Business.searchWithTerm("Restaurants", sort: yelpSortMode, categories: categories, deals: showDeals) { (businesses:[Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm("Restaurants", sort: yelpSortMode, categories: categories, deals: showDeals, location: location, radius: distance) { (businesses:[Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.businessesTableView.reloadData()
         }
