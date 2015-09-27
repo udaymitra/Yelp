@@ -34,13 +34,20 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         customSearchCancelBarButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: "customSearchBarCancelButtonClicked")
         customSearchCancelBarButton.tintColor = UIColor.whiteColor()
         
+        // set status bar content color to white
+        UIApplication.sharedApplication().statusBarStyle = .LightContent
+
+        
+        // set delegates
         searchBar.delegate = self
         businessesTableView.delegate = self
         businessesTableView.dataSource = self
         
+        // tableView set up
         businessesTableView.rowHeight = UITableViewAutomaticDimension
         businessesTableView.estimatedRowHeight = 100
         
+        // populate some initial results
         getBusinessResultsForSearchStringWithoutFilters(lastSearchString)
     }
 
@@ -117,7 +124,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func getBusinessResultsForSearchStringWithoutFilters(searchString: String) {
-        Business.searchWithTerm(searchString, sort: .Distance, categories: nil, deals: false, location: defaultLocation, radius: nil) { (businesses: [Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm(searchString, sort: nil, categories: nil, deals: false, location: defaultLocation, radius: nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             // reload table view
             self.businessesTableView.reloadData()
