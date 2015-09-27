@@ -12,11 +12,14 @@ import UIKit
     optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:AnyObject])
 }
 
-class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate {
+class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate, ShowMoreCellDelegate {
     @IBOutlet weak var tableView: UITableView!
     var filterSections : [Filter]!
     
     weak var delegate: FiltersViewControllerDelegate?
+    
+    // numbers of filters to show in multi select before Show more cell is tapped
+    let NUM_SUBSET_FILTERS_TO_SHOW = 5
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,39 +54,46 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
         let section = indexPath.section
         let row = indexPath.row
         let filter = filterSections[section]
-        cell.switchLabel.text = filter.filterOptions[row]["name"]
-        cell.delegate = self
         
-        // initial state
-        var imageToShow : String?
-        switch(filter.filterType) {
-        case .Toggle:
-            let isToggleOn = !filter.getSelectedFilterOptions().isEmpty
-            imageToShow = (isToggleOn) ? "Check" : "Uncheck"
-            break
-        case .SingleSelect:
-            if (filter.isUserInteractingWithFilter) {
+        if (filter.filterType == .MultiSelect && !filter.showAllMultiCellOptions && row == NUM_SUBSET_FILTERS_TO_SHOW) {
+            let cell = tableView.dequeueReusableCellWithIdentifier("ShowMoreCell", forIndexPath: indexPath) as! ShowMoreCell
+            cell.delegate = self
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            cell.switchLabel.text = filter.filterOptions[row]["name"]
+            cell.delegate = self
+            
+            // initial state
+            var imageToShow : String?
+            switch(filter.filterType) {
+            case .Toggle:
+                let isToggleOn = !filter.getSelectedFilterOptions().isEmpty
+                imageToShow = (isToggleOn) ? "Check" : "Uncheck"
+                break
+            case .SingleSelect:
+                if (filter.isUserInteractingWithFilter) {
+                    let isSwitchOn = filter.switchStates[row] ?? false
+                    imageToShow = (isSwitchOn) ? "Check" : "Uncheck"
+                } else {
+                    if let selectedOption = filter.getSelectedOption() {
+                        cell.switchLabel.text = filter.filterOptions[selectedOption]["name"]
+                    }
+                    imageToShow = "Dropdown"
+                }
+                break
+            case .MultiSelect:
                 let isSwitchOn = filter.switchStates[row] ?? false
                 imageToShow = (isSwitchOn) ? "Check" : "Uncheck"
-            } else {
-                if let selectedOption = filter.getSelectedOption() {
-                    cell.switchLabel.text = filter.filterOptions[selectedOption]["name"]
-                }
-                imageToShow = "Dropdown"
+                break
             }
-            break
-        case .MultiSelect:
-            let isSwitchOn = filter.switchStates[row] ?? false
-            imageToShow = (isSwitchOn) ? "Check" : "Uncheck"
-            break
+            
+            cell.switchImageView.image = UIImage(named: imageToShow!)
+            return cell
         }
-        
-        cell.switchImageView.image = UIImage(named: imageToShow!)
-        return cell
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -94,7 +104,9 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
                 ? filter.filterOptions.count
                 : 1
         case .MultiSelect:
-            return filter.filterOptions.count
+            return filter.showAllMultiCellOptions
+                ? filter.filterOptions.count
+                : min(NUM_SUBSET_FILTERS_TO_SHOW + 1, filter.filterOptions.count)
         }
     }
     
@@ -131,6 +143,15 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         }
         
         // TODO: look into reloading just the section
+        tableView.reloadData()
+    }
+    
+    func showMoreCellIsTapped(showMoreCell: ShowMoreCell) {
+        print("Show more cell is Tapped")
+
+        let indexPath = tableView.indexPathForCell(showMoreCell)!
+        let filter = filterSections[indexPath.section]
+        filter.showAllMultiCellOptions = true
         tableView.reloadData()
     }
     

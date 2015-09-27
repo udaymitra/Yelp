@@ -15,6 +15,7 @@ class Filter {
     var filterType : FilterType
     var switchStates = [Int:Bool]()
     var isUserInteractingWithFilter : Bool
+    var showAllMultiCellOptions : Bool
     
     init(sectionKey : String, sectionDisplayHeader : String?, filterOptions : [[String:String]], filterType: FilterType) {
         self.sectionKey = sectionKey
@@ -22,6 +23,7 @@ class Filter {
         self.filterOptions = filterOptions
         self.filterType = filterType
         self.isUserInteractingWithFilter = false
+        self.showAllMultiCellOptions = false
         
         if (filterType == .SingleSelect) {
             // mark the first choice as selected by default
