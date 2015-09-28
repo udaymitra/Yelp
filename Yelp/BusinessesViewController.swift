@@ -9,7 +9,10 @@
 import UIKit
 import MapKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate, CLLocationManagerDelegate {
+// number of businesses to fetch at a time from server
+let LAZY_FETCH_BATCH_SIZE = 20
+
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate, CLLocationManagerDelegate, BrowseMoreCellDelegate {
 
     var yelpResponse: YelpResponse!
     var searchBar:UISearchBar!
@@ -20,6 +23,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     // set default location
     var lastLocation = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
+    
     
     @IBOutlet weak var businessesTableView: UITableView!
     
@@ -47,7 +51,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         // set status bar content color to white
         UIApplication.sharedApplication().statusBarStyle = .LightContent
 
-        
         // set delegates
         searchBar.delegate = self
         businessesTableView.delegate = self
@@ -58,7 +61,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         businessesTableView.estimatedRowHeight = 100
         
         // populate some initial results
-        getBusinessResultsForSearchStringWithoutFilters(lastSearchString)
+        performSearch([String : AnyObject](), offset: 0, limit: LAZY_FETCH_BATCH_SIZE)
     }
 
     override func didReceiveMemoryWarning() {
@@ -70,16 +73,32 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (self.yelpResponse != nil) ? self.yelpResponse.businesses.count : 0
+        return (self.yelpResponse != nil)
+            ? (self.yelpResponse.businesses.count + 1) // additional one for Browse more cell
+            : 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let businessCell = businessesTableView.dequeueReusableCellWithIdentifier("BusinessCell", forIndexPath: indexPath) as! BusinessCell
-        businessCell.business = self.yelpResponse.businesses[indexPath.row]
-        return businessCell        
+        if (indexPath.row == yelpResponse.businesses.count) {
+            let browseMoreCell = businessesTableView.dequeueReusableCellWithIdentifier("BrowseMoreCell", forIndexPath: indexPath) as! BrowseMoreCell
+            browseMoreCell.delegate = self
+            return browseMoreCell
+        } else {
+            let businessCell = businessesTableView.dequeueReusableCellWithIdentifier("BusinessCell", forIndexPath: indexPath) as! BusinessCell
+            businessCell.business = self.yelpResponse.businesses[indexPath.row]
+            return businessCell
+        }
     }
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+        performSearch(filters, offset: 0, limit: LAZY_FETCH_BATCH_SIZE)
+    }
+    
+    func browseMoreCellIsTapped(browseMoreCell: BrowseMoreCell) {
+        performSearch([String : AnyObject](), offset: yelpResponse.businesses.count + 1, limit: LAZY_FETCH_BATCH_SIZE)
+    }
+    
+    func performSearch(filters: [String : AnyObject], offset: Int, limit: Int) {
         let categories = filters["categories"] as? [String]
         
         var yelpSortMode : YelpSortMode?
@@ -88,7 +107,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
                 yelpSortMode = YelpSortMode(rawValue: Int(sortmode[0])!)
             }
         }
-
+        
         let deals = filters["deals"] as? [String]
         let showDeals = deals != nil && !deals!.isEmpty
         
@@ -98,13 +117,18 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
                 distance = Double(distanceStrings[0])
             }
         }
-
-        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: lastLocation, radius: distance) { (yelpResponse:YelpResponse?, error: NSError!) -> Void in
-            self.yelpResponse = yelpResponse!
+        
+        Business.searchWithTerm(lastSearchString, sort: yelpSortMode, categories: categories, deals: showDeals, location: lastLocation, radius: distance, offset: offset, limit: limit) { (yelpResponse:YelpResponse?, error: NSError!) -> Void in
+            if (offset == 0) {
+                self.yelpResponse = yelpResponse
+            } else {
+                // paging
+                self.yelpResponse.businesses += yelpResponse!.businesses
+            }
             self.businessesTableView.reloadData()
         }
     }
-
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         super.prepareForSegue(segue, sender: sender)
         if segue.destinationViewController is UINavigationController {
@@ -129,7 +153,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         lastSearchString = searchText
-        getBusinessResultsForSearchStringWithoutFilters(searchText)
+        performSearch([String : AnyObject](), offset: 0, limit: LAZY_FETCH_BATCH_SIZE)
     }
     
     func customSearchBarCancelButtonClicked() {
@@ -142,14 +166,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         customSearchBarCancelButtonClicked()
-    }
-    
-    func getBusinessResultsForSearchStringWithoutFilters(searchString: String) {
-        Business.searchWithTerm(searchString, sort: nil, categories: nil, deals: false, location: lastLocation, radius: nil) { (yelpResponse: YelpResponse?, error: NSError!) -> Void in
-            self.yelpResponse = yelpResponse!
-            // reload table view
-            self.businessesTableView.reloadData()
-        }
     }
     
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {

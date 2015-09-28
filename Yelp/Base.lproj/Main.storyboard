@@ -140,6 +140,32 @@
                                             <outlet property="thumbnailImageView" destination="1x4-bp-XKj" id="DCA-OJ-pvS"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BrowseMoreCell" id="Nvw-ij-Rfj" customClass="BrowseMoreCell" customModule="Yelp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="211" width="600" height="119"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Nvw-ij-Rfj" id="q1K-0a-x0A">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="119"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Acm-Vw-b7X">
+                                                    <rect key="frame" x="18" y="13" width="564" height="94"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <state key="normal" title="Browse More">
+                                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="onBrowseMoreCellTap:" destination="Nvw-ij-Rfj" eventType="touchUpInside" id="wfy-xE-8ox"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Acm-Vw-b7X" firstAttribute="top" secondItem="q1K-0a-x0A" secondAttribute="topMargin" constant="5" id="9vm-N3-Fev"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Acm-Vw-b7X" secondAttribute="trailing" constant="10" id="Hfn-WV-hev"/>
+                                                <constraint firstItem="Acm-Vw-b7X" firstAttribute="leading" secondItem="q1K-0a-x0A" secondAttribute="leadingMargin" constant="10" id="Z7w-D3-jPe"/>
+                                                <constraint firstItem="Acm-Vw-b7X" firstAttribute="centerY" secondItem="q1K-0a-x0A" secondAttribute="centerY" id="ZFB-d5-Ffx"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </prototypes>
                             </tableView>
                         </subviews>

@@ -10,7 +10,7 @@ import Foundation
 import MapKit
 
 class YelpResponse {
-    let businesses: [Business]
+    var businesses: [Business]
     let mapRegionCenter: CLLocationCoordinate2D
     let coordinateSpan: MKCoordinateSpan
     
