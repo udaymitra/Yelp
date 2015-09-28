@@ -31,7 +31,6 @@ class SwitchCell: UITableViewCell {
     
     func switchValueChanged(gestureRecognizer: UITapGestureRecognizer) {
         delegate?.switchCellIsTapped!(self)
-        print("Switch value was tapped")
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

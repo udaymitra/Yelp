@@ -9,8 +9,6 @@
 import UIKit
 import MapKit
 
-// number of businesses to fetch at a time from server
-
 class BusinessesViewController: SearchViewController, UITableViewDataSource, UITableViewDelegate, BrowseMoreCellDelegate {
 
     @IBOutlet var showMapBarButton: UIBarButtonItem!
@@ -68,10 +66,8 @@ class BusinessesViewController: SearchViewController, UITableViewDataSource, UIT
                 mapViewController.locationManager = self.locationManager
             }
         }
-//        segue.destinationViewController.modalTransitionStyle = UIModalTransitionStyle.FlipHorizontal
-//        segue.destinationViewController.presentViewController(segue.destinationViewController, animated: true, completion: nil)
     }
-    
+
     override func showNewDataToUser() {
         self.businessesTableView.reloadData()
     }

@@ -17,11 +17,11 @@ class SearchViewController: UIViewController, FiltersViewControllerDelegate, UIS
     var customSearchCancelBarButton: UIBarButtonItem!
     var lastSearchString:String!
 
-    let LAZY_FETCH_BATCH_SIZE = 20
-
     var showMapOrListBarButton: UIBarButtonItem!
     var locationManager : CLLocationManager!
     
+    let LAZY_FETCH_BATCH_SIZE = 20
+
     // set default location
     var lastLocation = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
     
@@ -101,6 +101,7 @@ class SearchViewController: UIViewController, FiltersViewControllerDelegate, UIS
     }
 
     // need to override this function in sub classes
+    // TODO: This is ugly. Figure out how to define abstract methods in swift
     func showNewDataToUser() {}
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
