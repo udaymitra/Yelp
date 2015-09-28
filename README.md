@@ -1,34 +1,29 @@
-### Basic Yelp client
+### Yelp client
 
-This is a headless example of how to implement an OAuth 1.0a Yelp API client. The Yelp API provides an application token that allows applications to make unauthenticated requests to their search API.
+Basic Yelp client implementation with list view, map view and search
 
-### Next steps
+Time spent > 30 hours
 
-- Check out `BusinessesViewController.swift` to see how to use the `Business` model.
+### Completed features
 
-### Sample request
+I took a stab at all the optional features except restaurant detail view
 
-**Basic search with query**
+- Search results page
+    - Table rows should change height according to the content height (Required)
+        - Issue: Deals label adds additional space at the bottom of the cell even though its hidden. Setting the constraint constant for deal text to 0 didnt help. Removing and adding contraint programmatically in code was resulting in a crash
+    - Custom cells should have the proper Auto Layout constraints (Required)
+    - Search bar is shown in the navigation bar (Required)
+    - Infinite scroll for restaurant results (Optional)
+        - I tried using scrollViewDidScroll() and table view's didEndDisplayingCell() function to trigger Yelp call when reaching end of the table view, but couldnt identify the magic incantation that tells me that user has scrolled to the end of the table list
+        - Added Browse More button at the end of the list that shows more results
+    - Implement map view of restaurant results (Optional)
+        - Search and filters work in map mode as well
 
-```
-Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
-    self.businesses = businesses
-    
-    for business in businesses {
-        println(business.name!)
-        println(business.address!)
-    }
-})
-```
-
-**Advanced search with categories, sort, and deal filters**
-
-```
-Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-
-    for business in businesses {
-        println(business.name!)
-        println(business.address!)
-    }
-}
-```
+- Filter Page
+    - Implemented category, sort, radius, and deals filters (Required)
+    - Filters table is organized into sections (Required)
+    - Clicking on the "Search" button dismisses the filters page and trigger the search w/ the new filter settings (Required)
+    - Implemented custom switches and custom drop down menu for Single Select and Toggle switches (Optional)
+    - Radius filter expands as in the real Yelp app (Optional)
+        - This requirement is vague to me. I added additional radius filter to pass to the OAuth call and verified that increasing distance in filter increases the location spread of businesses returned
+    - Categories show a subset of the full list with a "See All" row to expand (Optional)
