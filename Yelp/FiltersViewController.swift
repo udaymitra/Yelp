@@ -26,7 +26,6 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         
         filterSections = YelpFilters().filterSections
         
-        
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = UITableViewAutomaticDimension

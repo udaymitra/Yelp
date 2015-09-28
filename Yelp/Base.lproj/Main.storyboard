@@ -26,7 +26,7 @@
                                         <rect key="frame" x="0.0" y="92" width="600" height="119"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="E9J-mU-0E1" id="kB0-PM-hjr">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="119"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="118"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1x4-bp-XKj">
@@ -77,13 +77,13 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thai, Seafood, Salad" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hvv-sV-hdC">
-                                                    <rect key="frame" x="81" y="59" width="117" height="15"/>
+                                                    <rect key="frame" x="81" y="60" width="117" height="15"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.53058862433862441" green="0.53058862433862441" blue="0.53058862433862441" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Deals" translatesAutoresizingMaskIntoConstraints="NO" id="Clw-cE-1ek">
-                                                    <rect key="frame" x="81" y="76" width="15" height="15"/>
+                                                    <rect key="frame" x="81" y="77" width="15" height="15"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="15" id="1CA-gj-iy2"/>
                                                         <constraint firstAttribute="height" constant="15" id="FY2-I4-9hb"/>
@@ -144,11 +144,11 @@
                                         <rect key="frame" x="0.0" y="211" width="600" height="119"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Nvw-ij-Rfj" id="q1K-0a-x0A">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="119"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="118"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Acm-Vw-b7X">
-                                                    <rect key="frame" x="18" y="13" width="564" height="94"/>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Acm-Vw-b7X">
+                                                    <rect key="frame" x="18" y="12" width="564" height="94"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <state key="normal" title="Browse More">
                                                         <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -181,13 +181,13 @@
                         <barButtonItem key="leftBarButtonItem" title="Filters" id="S8V-UV-YXi">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <segue destination="xFM-pg-itK" kind="presentation" id="sfj-Y6-YQS"/>
+                                <segue destination="xFM-pg-itK" kind="presentation" modalTransitionStyle="crossDissolve" id="sfj-Y6-YQS"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Map" id="obI-sw-rJK">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <segue destination="4BN-0j-JiF" kind="presentation" id="4eY-If-jVd"/>
+                                <segue destination="4BN-0j-JiF" kind="presentation" modalTransitionStyle="flipHorizontal" id="4eY-If-jVd"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -384,6 +384,12 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="CW4-vo-6e9">
+                        <barButtonItem key="leftBarButtonItem" title="Filters" id="Ac9-0S-vwO">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <segue destination="xFM-pg-itK" kind="presentation" modalTransitionStyle="crossDissolve" id="1Af-lt-wVJ"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="List" id="dnz-J4-uh8">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
@@ -392,12 +398,13 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="listViewBarButtomItem" destination="dnz-J4-uh8" id="ClA-ZN-TRy"/>
                         <outlet property="mapView" destination="JCg-Ox-8Y7" id="UUq-RA-18q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MhJ-Qc-9U5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4069" y="-488"/>
+            <point key="canvasLocation" x="4090" y="-464"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="yXu-De-2L2">
@@ -416,10 +423,13 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GoE-rd-sZ8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3399" y="-488"/>
+            <point key="canvasLocation" x="3409" y="-464"/>
         </scene>
     </scenes>
     <resources>
         <image name="Deals" width="16" height="16"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="1Af-lt-wVJ"/>
+    </inferredMetricsTieBreakers>
 </document>

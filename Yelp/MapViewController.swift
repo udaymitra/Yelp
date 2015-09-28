@@ -10,21 +10,23 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapViewController: UIViewController, MKMapViewDelegate {
-    var delegate: BusinessesViewController!
+class MapViewController: SearchViewController, MKMapViewDelegate {
+    weak var delegate: BusinessesViewController!
     @IBOutlet weak var mapView: MKMapView!
-    weak var locationManager : CLLocationManager!
-    
-    var yelpResponse: YelpResponse!
     var businessByAnnotation = [NSValue : Business]()
     var firstAnnotation : MKPointAnnotation?
     
+    @IBOutlet weak var listViewBarButtomItem: UIBarButtonItem!
     override func viewDidLoad() {
         super.viewDidLoad()
         
         mapView.delegate = self
+        super.showMapOrListBarButton = listViewBarButtomItem
+    }
+    
+    override func showNewDataToUser() {
         mapView.setRegion(MKCoordinateRegionMake(yelpResponse.mapRegionCenter, yelpResponse.coordinateSpan
-        ), animated: false)
+            ), animated: false)
         createAnnotations()
     }
     
