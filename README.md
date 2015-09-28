@@ -4,9 +4,9 @@ Basic Yelp client implementation with list view, map view and search
 
 Time spent > 30 hours
 
-### Completed features
-
 I took a stab at all the optional features except restaurant detail view
+
+### Completed features
 
 - Search results page
     - Table rows should change height according to the content height (Required)
