@@ -17,6 +17,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     var yelpResponse: YelpResponse!
     var businessByAnnotation = [NSValue : Business]()
+    var firstAnnotation : MKPointAnnotation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +32,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let existingAnnotations = mapView.annotations
         mapView.removeAnnotations(existingAnnotations)
         businessByAnnotation = [NSValue : Business]()
-        
+        firstAnnotation = nil
+
         for business in yelpResponse.businesses {
             if let center = business.center {
                 let annotation = MKPointAnnotation()
@@ -42,18 +44,20 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 businessByAnnotation[NSValue(nonretainedObject: annotation)] = business
                 
                 mapView.addAnnotation(annotation)
+                if (firstAnnotation == nil) {
+                    firstAnnotation = annotation
+                }
             }
+        }
+        
+        if (firstAnnotation != nil) {
+            mapView.selectAnnotation(firstAnnotation!, animated: false)
         }
     }
     
     @IBAction func onListBarButtonTap(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
-
-    
-//    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-//        let temp =  businessByAnnotation[NSValue(nonretainedObject: annotation)]!
-//    }
 
     /*
     // MARK: - Navigation
