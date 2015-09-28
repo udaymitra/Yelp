@@ -32,3 +32,12 @@ I took a stab at all the optional features except restaurant detail view
 ### Walkthrough:
 
 ![alt tag](https://github.com/udaymitra/Yelp/blob/master/walkthrough.gif)
+
+
+### Credits
+
+* [Yelp API](http://developer.rottentomatoes.com/docs/read/JSON)
+* [AFNetworking](https://github.com/AFNetworking/AFNetworking)
+* [BDBOAuth1Manager](https://github.com/bdbergeron/BDBOAuth1Manager)
+* I took some inspiration from this implementation: https://github.com/jerrysu/CodePath-Yelp
+
