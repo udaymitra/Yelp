@@ -17,7 +17,8 @@ I took a stab at all the optional features except restaurant detail view
         - I tried using scrollViewDidScroll() and table view's didEndDisplayingCell() function to trigger Yelp call when reaching end of the table view, but couldnt identify the magic incantation that tells me that user has scrolled to the end of the table list
         - Added Browse More button at the end of the list that shows more results
     - Implement map view of restaurant results (Optional)
-        - Search and filters work in map mode as well
+        - Search and filters work in map mode like expected
+        - Issue: Even though I am using core location and mapview is set to show user location, I am not seeing a blue dot. This used to work, but after a refactor to move all the core features to SearchViewController, this is broken.
 
 - Filter Page
     - Implemented category, sort, radius, and deals filters (Required)
@@ -27,3 +28,7 @@ I took a stab at all the optional features except restaurant detail view
     - Radius filter expands as in the real Yelp app (Optional)
         - This requirement is vague to me. I added additional radius filter to pass to the OAuth call and verified that increasing distance in filter increases the location spread of businesses returned
     - Categories show a subset of the full list with a "See All" row to expand (Optional)
+
+### Walkthrough:
+
+![alt tag](https://github.com/udaymitra/Yelp/blob/master/walkthrough.gif)
